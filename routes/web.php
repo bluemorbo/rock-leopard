@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,20 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/pdf', function () {
+    $html = '<h1>Bill</h1><p>You owe me money, dude.</p>';
+    $snappy = App::make('snappy.pdf');
+
+    return new Response(
+        $snappy->getOutputFromHtml($html),
+        200,
+        array(
+            'Content-Type'          => 'application/pdf',
+            'Content-Disposition'   => 'attachment; filename="file.pdf"'
+        )
+    );
+})->name('pdf-test');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
